@@ -53,12 +53,28 @@ def test_uvicorn():
     assert command.build() == ['uvicorn', '--port', '8000', 'foo.main:app', '--reload']
 
 def test_docker():
-    from commands import docker as dockerModule
-
-    docker = dockerModule.Command
+    from commands.docker import Command as docker
 
     docker_compose_up = docker().compose().up()
     docker_compose_down = docker().compose().down()
 
     assert docker_compose_up.build() == ['docker', 'compose', 'up']
     assert docker_compose_down.build() == ['docker', 'compose', 'down']
+
+def test_uv():
+    from commands import (
+        uvicorn as uvicornModule
+    )
+
+    from commands.uv import Command as uv
+
+    uvicorn = uvicornModule.Command(
+        app='foo.main:app',
+        reload=True,
+        port=8000,
+    )
+
+    assert (
+        uv().run(module=uvicorn).build()
+         == ['uv', 'run', 'uvicorn', '--port', '8000', 'foo.main:app', '--reload']
+    )
