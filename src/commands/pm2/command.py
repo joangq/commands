@@ -22,4 +22,5 @@ class Command(BaseCommand):
         ecosystem: Path = Field('{value}', process_path)
 
     class delete(BaseCommand):
+        ecosystem: Path = Field('{value}', process_path)
         app: str = Field('{value}')
