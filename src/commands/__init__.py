@@ -3,4 +3,4 @@ from . import celery
 from . import docker
 from . import uvicorn
 from . import uv
-
+from . import ffmpeg
