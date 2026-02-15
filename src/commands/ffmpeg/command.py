@@ -23,5 +23,5 @@ class Command(BaseCommand):
     copy: str = Field(['-copy', '{value}'])
     outfile: str = Field(['{value}'])
     version: bool = Field('-version')
-    codec_video: str = Field(['-c:v', '{value}'])
-    codec_audio: str = Field(['-c:a', '{value}'])
+    codec_video: VideoCodec = Field(['-c:v', '{value}'])
+    codec_audio: AudioCodec = Field(['-c:a', '{value}'])

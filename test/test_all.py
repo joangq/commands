@@ -31,10 +31,9 @@ def test_pm2():
     import platform
 
     cli = command.build()
-
+    arg0 = cli[0]
     match platform.system():
         case 'Windows':
-            arg0 = cli[0]
             assert arg0 in ('pm2.cmd', 'pm2')
         case 'Linux':
             assert arg0 in ('pm2', )
@@ -78,3 +77,32 @@ def test_uv():
         uv().run(module=uvicorn).build()
          == ['uv', 'run', 'uvicorn', '--port', '8000', 'foo.main:app', '--reload']
     )
+
+
+def test_find():
+    from commands import find
+
+    assert find.Command().build() == ['find']
+
+    assert find.Command(
+        path='/tmp',
+        max_depth=1,
+        name='*.py',
+        action='print0',
+    ).build() == ['find', '/tmp', '-maxdepth', '1', '-name', '*.py', '-print0']
+
+    assert find.Command(path='.', action='delete').build() == ['find', '.', '-delete']
+
+    assert find.Command(
+        path='.',
+        follow_symlinks='follow',
+        file_type='file',
+        empty=True,
+    ).build() == ['find', '.', '-L', '-type', 'f', '-empty']
+
+    assert find.Command(
+        path='src',
+        min_depth=1,
+        max_depth=2,
+        depth=True,
+    ).build() == ['find', 'src', '-mindepth', '1', '-maxdepth', '2', '-depth']
