@@ -5,3 +5,4 @@ from . import uvicorn
 from . import uv
 from . import ffmpeg
 from . import find
+from . import r
