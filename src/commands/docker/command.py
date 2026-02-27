@@ -2,6 +2,7 @@ from typing import assert_type
 from argbuilder import Command as BaseCommand, Field
 from . import models
 from .expression import Expression, value, is_not
+import warnings
 
 # ==============================================================================
 
@@ -84,6 +85,13 @@ class Command(BaseCommand):
             self, 
             raise_on_error: bool = True
         ):
+            if not self.__dict__.get('quiet'):
+                warnings.warn(
+                    "Called 'execute_quiet' on non-quiet command."
+                  + " To suppress this warning, set 'quiet=True'"
+                )
+
+                self.__dict__['quiet'] = True
             
             result = self.run(text=False)
 
