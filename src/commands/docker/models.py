@@ -1,7 +1,8 @@
 from __future__ import annotations
-from pydantic import BaseModel, Field, RootModel
-from typing import Any, Literal
+from pydantic import BaseModel, Field, RootModel, AfterValidator, BeforeValidator
+from typing import Any, Literal, Annotated
 from dataclasses import make_dataclass, asdict
+from datetime import datetime
 
 def make_view(name='View'):
     def _(**keys):
@@ -47,8 +48,23 @@ type Status = Literal[
     'exited'
 ]
 
+status_values = (
+    'paused', 
+    'restarting', 
+    'removing', 
+    'running', 
+    'dead', 
+    'created', 
+    'exited'
+)
+
+def valid_status(status: str) -> Status:
+    if status not in status_values:
+        raise ValueError(f'Invalid status: {status}')
+    return status
+
 class State(ViewableModel):
-    Status: Status
+    Status: Annotated[Status, AfterValidator(valid_status)]
     Running: bool
     Paused: bool
     Restarting: bool
@@ -57,8 +73,8 @@ class State(ViewableModel):
     Pid: int
     ExitCode: int
     Error: str
-    StartedAt: str
-    FinishedAt: str
+    StartedAt: Annotated[datetime, BeforeValidator(datetime.fromisoformat)]
+    FinishedAt: Annotated[datetime, BeforeValidator(datetime.fromisoformat)]
 
 class LogConfig(ViewableModel):
     Type: str
