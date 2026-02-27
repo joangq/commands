@@ -1,5 +1,5 @@
 from __future__ import annotations
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, RootModel
 from typing import Any
 from dataclasses import make_dataclass, asdict
 
@@ -159,7 +159,7 @@ class NetworkSettings(ViewableModel):
     Ports: dict[str, Any] = Field(default_factory=dict)
     Networks: dict[str, Any] = Field(default_factory=dict)
 
-class Inspect(ViewableModel):
+class RootInspect(ViewableModel):
     Id: str
     Created: str
     Path: str
@@ -183,5 +183,8 @@ class Inspect(ViewableModel):
     Mounts: list[Any]
     Config: Config
     NetworkSettings: NetworkSettings
+
+class Inspect(RootModel[list[RootInspect]]):
+    pass
 
 # ==============================================================================
